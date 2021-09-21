@@ -3,11 +3,11 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExcess;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -29,7 +29,32 @@ public class UserMealsUtil {
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         // TODO return filtered list with excess. Implement by cycles
-        return null;
+
+        // create result ArrayList
+        List<UserMealWithExcess> result = new ArrayList<>();
+
+        // create map to save calories per day
+        Map<LocalDate, Integer> dateIntegerMap = new HashMap<>();
+
+        // put userMeal calories to map
+        meals.forEach(userMeal -> {
+            if (dateIntegerMap.containsKey(userMeal.getDateTime().toLocalDate())) {
+                int calories = dateIntegerMap.get(userMeal.getDateTime().toLocalDate());
+                dateIntegerMap.put(userMeal.getDateTime().toLocalDate(), calories + userMeal.getCalories());
+            } else {
+                dateIntegerMap.put(userMeal.getDateTime().toLocalDate(), userMeal.getCalories());
+            }
+        });
+
+        // find userMeals in current time range
+        meals.forEach(userMeal -> {
+
+            if (userMeal.getDateTime().toLocalTime().isAfter(startTime) && userMeal.getDateTime().toLocalTime().isBefore(endTime)) {
+                boolean excess = dateIntegerMap.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay;
+                result.add(new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), excess));
+            }
+        });
+        return result;
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
