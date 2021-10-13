@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,9 @@ import java.util.stream.Collectors;
 
 public class MealsUtil {
 
-    private static List<Meal> meals = Arrays.asList(
+    private static long idCount = 0;
+
+    private static List<Meal> meals = new ArrayList<>(Arrays.asList(
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000),
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500),
@@ -22,9 +25,14 @@ public class MealsUtil {
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000),
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500),
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
-    );
+    ));
 
     private static final int CALORIES_PER_DAY = 2000;
+
+    public static long getIdCount() {
+        idCount++;
+        return idCount;
+    }
 
     public static void main(String[] args) {
 
@@ -46,10 +54,46 @@ public class MealsUtil {
     }
 
     private static MealTo createTo(Meal meal, boolean excess) {
-        return new MealTo(meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+        return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 
     public static List<MealTo> getMeals() {
         return filteredByStreams(meals, LocalTime.of(0, 0), LocalTime.of(23, 0), CALORIES_PER_DAY);
+    }
+
+    public static Meal getMealById(Long id) {
+        Meal mealByDateTime = null;
+        for (Meal meal : meals) {
+            if (meal.getId() == id) {
+                mealByDateTime = meal;
+            }
+        }
+        return mealByDateTime;
+    }
+
+    public static void deleteMeal(Long id) {
+        Meal mealByDateTime = null;
+        for (Meal meal : meals) {
+            if (meal.getId() == id) {
+                mealByDateTime = meal;
+                break;
+            }
+        }
+        meals.remove(mealByDateTime);
+    }
+
+    public static void addMeal(Meal meal) {
+        meals.add(meal);
+    }
+
+    public static void editMeal(long mealId, LocalDateTime dateTime, String description, int calories) {
+        for (Meal meal : meals) {
+            if (meal.getId() == mealId) {
+                meal.setDateTime(dateTime);
+                meal.setDescription(description);
+                meal.setCalories(calories);
+                break;
+            }
+        }
     }
 }

@@ -24,6 +24,7 @@
     <h3> <a href="index.html">Home</a> </h3>
     <hr>
     <H2>Meals</H2>
+    <p><a href="meals?action=insert&">Add Meal</a></p>
     <table>
         <tr>
             <th>Date</th>
@@ -36,6 +37,8 @@
                 <td>${mealTo.date} ${mealTo.time}</td>
                 <td>${mealTo.description}</td>
                 <td>${mealTo.calories}</td>
+                <td><a href="meals?action=edit&mealId=<c:out value="${mealTo.id}"/>">Update</a></td>
+                <td><a href="meals?action=delete&mealId=<c:out value="${mealTo.id}"/>">Delete</a></td>
             </tr>
         </c:if>
         <c:if test="${mealTo.excess eq false}">
@@ -43,6 +46,8 @@
             <td>${mealTo.date} ${mealTo.time}</td>
             <td>${mealTo.description}</td>
             <td>${mealTo.calories}</td>
+            <td><a href="meals?action=edit&mealId=<c:out value="${mealTo.id}"/>">Update</a></td>
+            <td><a href="meals?action=delete&mealId=<c:out value="${mealTo.id}"/>">Delete</a></td>
         </tr>
         </c:if>
     </c:forEach>
